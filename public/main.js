@@ -27,6 +27,7 @@ class TabHeader extends HTMLElement {
                 const tabs = document.querySelectorAll('.tab-content');
                 const tabsContainer = document.querySelector('#tabs-container');
                 const lastChild = document.querySelector('#tabs-container>div:last-child');
+                const cmdInput = document.getElementById('cmd-input');
 
                 tabs.forEach(tab => {
                     tab.classList.add('hidden');
@@ -34,11 +35,15 @@ class TabHeader extends HTMLElement {
 
                 currentExercise = parseInt(link.getAttribute('data-exercise'));
 
-                if (currentExercise === 4) {
+                cmdInput.value = '';
+
+                if (currentExercise === 4 || currentExercise === 7) {
                     tabsContainer.classList.remove('lg:grid-cols-2');
                     tabsContainer.classList.add('lg:grid-cols-1');
 
                     lastChild.classList.remove('lg:ps-10');
+
+                    cmdInput.removeAttribute('maxlength');
                 }else {
                     tabsContainer.classList.remove('lg:grid-cols-1');
                     tabsContainer.classList.add('lg:grid-cols-2');
@@ -46,6 +51,8 @@ class TabHeader extends HTMLElement {
                     lastChild.classList.add('lg:ps-10');
 
                     activeTab.classList.remove('hidden');
+
+                    cmdInput.setAttribute('maxlength', '20');
                 }
 
                 // Guardar en el LocalStorage el ejercicio actual
@@ -76,7 +83,7 @@ const cmdInput = document.getElementById('cmd-input');
  * Crea una nueva línea de comando en la consola.
  * @param command {string} - Comando a mostrar.
  */
-function newCommandLine(command) {
+function newCommandLine(command, args=null) {
     const cmdTemplate = document.getElementById('cmd-template');
     const lastElement = cmd.lastElementChild;
     const clone = cmdTemplate.cloneNode(true);
@@ -88,7 +95,7 @@ function newCommandLine(command) {
 
     if (lastCommand) lastCommand.removeAttribute('id');
 
-    clone.querySelector('.cmd-command').textContent = command;
+    clone.querySelector('.cmd-command').textContent = command + (args ? ` ${args.join(' ')}` : '');
 
     cmd.insertBefore(clone, lastElement);
 }
@@ -191,10 +198,27 @@ cmdInput.addEventListener('keydown', (event) => {
         if (cmd === 'help') {
             arrayText = [
                 '<span class="text-green-500">Available commands:</span>',
-                'help - Show this message', 'clear - Clear the terminal',
-                'about - Show information about the author',
-                'run - Execute the current exercise, you can add arguments if necessary.'
+                'help - Show this message',
+                'clear - Clear the terminal',
+                'about - Show information about the author'
             ];
+
+            if (currentExercise !== 7) {
+                arrayText.push('run - Execute the current exercise, you can add arguments if necessary.');
+            }
+
+            if (currentExercise === 2) {
+                arrayText.push('reset - Reset the current exercise');
+            }
+
+            if (currentExercise === 7) {
+                arrayText.push('add {TASK} - Add a new task to the list');
+                arrayText.push('complete {TASK_ID} - Mark a task as completed');
+                arrayText.push('remove {TASK_ID} - Remove a task from the list');
+                arrayText.push('list - Show the list of tasks');
+                arrayText.push('<br><span class="text-violet-500">🔥 Tip: Tasks cannot have the same name.</span>');
+            }
+
         }else if (cmd === 'clear') {
             clearCMD();
             newCommandLine(cmd);
@@ -213,7 +237,14 @@ cmdInput.addEventListener('keydown', (event) => {
             }
 
             return;
-        }else if(cmd === 'reset') {
+        }else if(currentExercise === 7) {
+            if (cmd === 'add' || cmd === 'complete' || cmd === 'remove' || cmd === 'list') {
+                exercise7(cmd, args);
+                return;
+            }
+
+            commandNotFound();
+        } else if(cmd === 'reset') {
             switch (currentExercise) {
                 case 2: exercise2(true, true); break;
                 default: commandNotFound(); break;
@@ -581,8 +612,89 @@ function exercise6(originConsole) {
 
 btnSend6.addEventListener('click', () => exercise6(false));
 
-// TODO: SOLO PARA PRUEBAS, BORRAR CUANDO SE TERMINE
-showCMDInput();
+// ==========================================
+//              7️⃣ Ejercicio 7
+// ==========================================
+let tasks = [];
+let lastTaskId = 0;
+
+class Task {
+    constructor(name) {
+        this.id = ++lastTaskId;
+        this.name = name;
+        this.completed = false;
+    }
+}
+
+function exercise7(command, args) {
+    let arrayText;
+
+    switch (command) {
+        case 'add':
+            const taskName = args.join(' ');
+
+            if (taskName === '') {
+                arrayText = ['<span class="text-red-400">⚠️ Debes ingresar un nombre para la tarea.</span>'];
+            }else {
+                const existingTask = tasks.find((task) => task.name.toLowerCase().localeCompare(taskName.toLowerCase()) === 0);
+
+                if (existingTask) {
+                    arrayText = ['<span class="text-red-400">⚠️ Ya existe una tarea con ese nombre.</span>'];
+                }else {
+                    const newTask = new Task(taskName);
+                    tasks.push(newTask);
+
+                    arrayText = [`<span class="text-green-500">✨ Tarea "${newTask.name}" añadida correctamente con el ID ${newTask.id}.</span>`];
+                }
+            }
+
+            break;
+        case 'complete':
+            const taskId = parseInt(args[0]);
+            const task = tasks.find((task) => task.id === taskId);
+
+            if (isNaN(taskId) || !task) {
+                arrayText = ['<span class="text-red-400">⚠️ Debes ingresar un ID válido.</span>'];
+            }else {
+                task.completed = true;
+                arrayText = [`<span class="text-green-500">✨ Tarea "${task.name}" completada correctamente.</span>`];
+            }
+
+            break;
+        case 'remove':
+            const taskIdRemove = parseInt(args[0]);
+            const taskRemove = tasks.find((task) => task.id === taskIdRemove);
+
+            if (isNaN(taskIdRemove) || !taskRemove) {
+                arrayText = ['<span class="text-red-400">⚠️ Debes ingresar un ID válido.</span>'];
+            }else {
+                tasks = tasks.filter((task) => task.id !== taskIdRemove);
+                arrayText = [`<span class="text-green-500">✨ Tarea "${taskRemove.name}" eliminada correctamente.</span>`];
+            }
+
+            break;
+        case 'list':
+            if (tasks.length === 0) {
+                arrayText = ['<span class="text-blue-400">📝 No hay tareas registradas.</span>'];
+            }else {
+                arrayText = ['<span class="text-green-500">✨ Lista de tareas:</span>'];
+                tasks.forEach((task) => {
+                    arrayText.push(`<span class="${task.completed ? 'line-through text-gray-400' : 'text-blue-400'}">${task.id}. ${task.name}</span>`);
+                });
+            }
+
+            break;
+        default: commandNotFound(); return;
+    }
+
+    typeWriter(
+        getLastCommand().querySelector('.cmd-output'),
+        arrayText,
+        showCMDInput,
+        25,
+        500
+    );
+}
 
 // ==========================================
 //              Inicialización
@@ -597,6 +709,6 @@ typeWriter(
         'Type "help" to get started!'
     ],
     showCMDInput,
-    10, // PRUEBAS
-    300 // PRUEBAS
+    10,
+    300
 );
