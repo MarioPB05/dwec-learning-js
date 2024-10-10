@@ -1,0 +1,44 @@
+---
+import {Icon} from 'astro-icon/components';
+const {links} = Astro.props;
+---
+
+<style>
+    a.active {
+        @apply text-white bg-blue-600;
+    }
+
+    a:not(.active) {
+        @apply bg-slate-700 text-gray-400 hover:text-white hover:bg-blue-500;
+    }
+
+    a.active>svg {
+        @apply text-white;
+    }
+
+    a:not(.active)>svg {
+        @apply text-slate-400 group-hover/tabLink:text-white;
+    }
+</style>
+
+<tab-header>
+    <ul class="flex items-center gap-4 md:gap-0 md:flex-col flex-wrap md:flex-nowrap text-nowrap space-y md:space-y-4 text-sm font-medium text-gray-400 md:me-4 mb-4 md:mb-0 px-4 md:px-0">
+        {links.map((link, index) => (
+            <li class="flex justify-center md:list-item flex-1">
+                <a href={link.href} data-exercise={index+1}
+                   class:list={[
+                       "group/tabLink md:w-full inline-flex items-center px-4 py-3 rounded-lg transition-colors duration-200 ease-in-out",
+                       { "active": link.active }
+                   ]}>
+                    <Icon name={link.icon}
+                          class="me-2 size-6 transition-colors duration-200 ease-in-out"/>
+                    {link.text}
+                </a>
+            </li>
+        ))}
+    </ul>
+</tab-header>
+
+<script>
+
+</script>

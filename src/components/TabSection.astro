@@ -1,0 +1,14 @@
+---
+const { id, active } = Astro.props;
+
+let display;
+if (active) {
+    display = 'flex';
+}else {
+    display = 'hidden';
+}
+---
+
+<div id={id} class:list={[display, "tab-content lg:border-r-2 border-slate-600 flex-col justify-center lg:pe-20"]}>
+    <slot />
+</div>
