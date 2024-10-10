@@ -1,0 +1,26 @@
+---
+import {Icon} from "astro-icon/components";
+---
+<p class="prose-slate mb-10">
+    En este ejercicio podrás guardar el nombre de un estudiante junto con su calificación. Al final podrás ver el promedio de las calificaciones.
+</p>
+
+<div class="flex flex-col xl:flex-row justify-between gap-4 w-full">
+    <div class="relative w-full">
+        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+            <Icon name="mdi:graduation-cap" class="size-5 text-gray-400"/>
+        </div>
+        <input type="text" class="student-name bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5" placeholder="Nombre del alumno..." required />
+    </div>
+    <div class="relative">
+        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+            <Icon name="mdi:graph-bar" class="size-5 text-gray-400"/>
+        </div>
+        <input type="number" min="0" max="10" step="0.05" class="student-grade bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block min-w-[150px] w-full xl:w-auto ps-10 p-2.5" placeholder="Nota..." required />
+    </div>
+</div>
+
+
+<div class="flex justify-center">
+    <button id="btn-send-3" class="mt-10 bg-blue-500 block px-20 py-2 rounded-full">Añadir Alumno</button>
+</div>
