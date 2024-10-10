@@ -251,7 +251,16 @@ cmdInput.addEventListener('keydown', (event) => {
             }
 
             return;
-        }else {
+        }else if(cmd === 'about') {
+            arrayText = [
+                '<span class="text-green-500">👨‍💻 About the author:</span>',
+                'Name: Mario Perdiguero Barrera',
+                'Course: 2º DAW',
+                'Subject: DWEC',
+                'School: SAFA Seville, Spain',
+                'Year: 2024/2025',
+            ];
+        } else {
             arrayText = ['<span class="text-red-400">⚠️ Command not found. Type "help" to get started!</span>'];
         }
 
