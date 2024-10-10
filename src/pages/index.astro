@@ -1,16 +1,54 @@
 ---
-
+import Tabs from "~/components/Tabs.astro";
+import TabSection from "../components/TabSection.astro";
+import Exercise1 from "../components/exercises/Exercise1.astro";
+import Exercise2 from "../components/exercises/Exercise2.astro";
+import Exercise3 from "../components/exercises/Exercise3.astro";
+import Exercise5 from "../components/exercises/Exercise5.astro";
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+    <head>
+        <meta charset="utf-8"/>
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+        <meta name="viewport" content="width=device-width"/>
+        <meta name="generator" content={Astro.generator}/>
+        <title>Ejercicios Evaluables</title>
+        <style>
+            body {
+                @apply lg:h-screen relative;
+                @apply py-14 lg:py-0;
+                @apply bg-slate-800 text-white;
+                @apply flex flex-col items-center justify-center;
+            }
+        </style>
+    </head>
+    <body>
+        <h1 class="text-center text-6xl font-bold mb-4">Ejercicios Evaluables</h1>
+        <span class="text-center text-xl">Mario Perdiguero Barrera</span>
+        <span class="text-gray-400 font-light mt-2 mb-20">2º DAW | DWEC</span>
+
+        <Tabs>
+            <TabSection id="tab-exercise-1" active="true">
+                <Exercise1 />
+            </TabSection>
+
+            <TabSection id="tab-exercise-2">
+                <Exercise2 />
+            </TabSection>
+
+            <TabSection id="tab-exercise-3">
+                <Exercise3 />
+            </TabSection>
+
+            <div id="tab-exercise-4" class="hidden"></div>
+
+            <TabSection id="tab-exercise-5">
+                <Exercise5 />
+            </TabSection>
+        </Tabs>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.10/typed.min.js" integrity="sha512-hIlMpy2enepx9maXZF1gn0hsvPLerXoLHdb095CmRY5HG3bZfN7XPBZ14g+TUDH1aGgfLyPHmY9/zuU53smuMw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script is:global type="module" src="main.js"></script>
+    </body>
 </html>
