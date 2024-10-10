@@ -11,7 +11,13 @@
   },
   "dependencies": {
     "@astrojs/tailwind": "^5.1.1",
+    "@iconify-json/mdi": "^1.2.0",
     "astro": "^4.15.10",
-    "tailwindcss": "^3.4.13"
+    "astro-icon": "^1.1.1",
+    "tailwindcss": "^3.4.13",
+    "typed.js": "^2.1.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.15"
   }
 }
