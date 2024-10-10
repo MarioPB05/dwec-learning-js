@@ -208,6 +208,7 @@ cmdInput.addEventListener('keydown', (event) => {
                 case 3: exercise3(true); break;
                 case 4: exercise4(); break;
                 case 5: exercise5(true); break;
+                case 6: exercise6(true); break;
                 default: commandNotFound(); break;
             }
 
@@ -540,6 +541,45 @@ function exercise5(originConsole) {
 }
 
 btnSend5.addEventListener('click', () => exercise5(false));
+
+// ==========================================
+//              6️⃣ Ejercicio 6
+// ==========================================
+const btnSend6 = document.querySelector('#btn-send-6');
+
+function exercise6(originConsole) {
+    const phrase = document.querySelector('.phrase-6').value;
+    let arrayText;
+
+    if (!originConsole) newCommandLine('run');
+
+    if (phrase === '') {
+        arrayText = ['<span class="text-red-400">⚠️ Debes ingresar una frase o una palabra.</span>'];
+    }else {
+        const cleanPhrase = phrase
+            .normalize('NFD') // Eliminar tildes
+            .replace(/[\u0300-\u036f]/g, '') // Eliminar tildes
+            .replace(/[^a-zA-Z]/g, '') // Eliminar caracteres no alfabéticos
+            .toLowerCase(); // Convertir a minúsculas
+        const reversePhrase = cleanPhrase.split('').reverse().join('');
+        const isPalindrome = cleanPhrase === reversePhrase;
+
+
+        arrayText = [
+            `<span class="text-green-500">✨ La frase "${phrase}" ${isPalindrome ? 'es' : 'no es'} un palíndromo.</span>`
+        ];
+    }
+
+    typeWriter(
+        getLastCommand().querySelector('.cmd-output'),
+        arrayText,
+        showCMDInput,
+        25,
+        500
+    );
+}
+
+btnSend6.addEventListener('click', () => exercise6(false));
 
 // TODO: SOLO PARA PRUEBAS, BORRAR CUANDO SE TERMINE
 showCMDInput();
